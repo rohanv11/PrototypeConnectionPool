@@ -1,0 +1,37 @@
+
+services:
+  mysql-db:
+    container_name: mysql-db
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root@123
+      MYSQL_DATABASE: dummy_db
+      MYSQL_USER: rohan123
+      MYSQL_PASSWORD: rohan123
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  python-app:
+    container_name: python-app
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      MYSQL_HOST: mysql-db
+      MYSQL_PORT: 3306
+      MYSQL_USER: rohan123
+      MYSQL_PASSWORD: rohan123
+      MYSQL_DATABASE: dummy_db
+    volumes:
+      - ./app:/app  # Mount your application code for hot reloading
+    depends_on:
+      - mysql-db
+
+
+
+volumes:
+  db_data:
